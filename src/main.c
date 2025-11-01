@@ -5,7 +5,7 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_WORD_COUNT 100
+#define MAX_WORD_COUNT 10000
 #define MAX_SUCCESSOR_COUNT MAX_WORD_COUNT / 2
 
 char book[] = {
@@ -66,15 +66,17 @@ size_t token_id(char *token) {
 }
 
 /// Appends the token \c succ to the successors list of \c token.
-void append_to_succs(char *token, char *succ) {
+bool append_to_succs(char *token, char *succ) {
   auto next_empty_index_ptr = &succs_sizes[token_id(token)];
 
   if (*next_empty_index_ptr >= MAX_SUCCESSOR_COUNT) {
     printf("Successor array full.");
-    exit(EXIT_FAILURE);
+    // exit(EXIT_FAILURE);
+    return true;
   }
 
   succs[token_id(token)][(*next_empty_index_ptr)++] = succ;
+  return false;
 }
 
 /// Creates tokens on \c book and fills \c tokens and \c succs using
@@ -85,12 +87,24 @@ void tokenize_and_fill_succs(char *delimiters, char *str) {
   char tempbook[booksize];
   strcpy(tempbook, str);
   // printf("%s", tempbook);
-  char *tmpbookpointer = strtok(tempbook, " ");
-  for (size_t word = 0; word < maxtokencount; word++) {
-    tokens[word] = tmpbookpointer;
-    printf("%s\n", tmpbookpointer);
-    tmpbookpointer = strtok(NULL, " ");
+  char *tokenpointer = strtok(tempbook, " ");
+  char *succerserpointer = strtok(NULL, " ");
+  append_to_succs(tokenpointer, succerserpointer);
+  for (size_t word = 0; word < booksize; word++) {
+    tokenpointer = succerserpointer;
+    succerserpointer = strtok(NULL, " ");
+    bool appenddone = append_to_succs(tokenpointer, succerserpointer);
+    if (appenddone) {
+      break;
+    }
   }
+  // for (size_t word = 0; word < maxtokencount; word++) {
+  // tokens[0] = tmpbookpointer;
+  // succs[0][word] = tmpbookpointer + 1;
+  // printf("%s\n", tmpbookpointer);
+  // tmpbookpointer = strtok(NULL, " ");
+
+  //}
 }
 
 /// Returns last character of a string
@@ -100,14 +114,36 @@ char last_char(char *str) {
 
 /// Returns whether the token ends with `!`, `?` or `.`.
 bool token_ends_a_sentence(char *token) {
-  // YOUR CODE HERE
+  char *tmpsentence;
+  bool sentenceend = false;
+  static int count = 0;
+  strcpy(tmpsentence, token);
+  if (tmpsentence[strlen(tmpsentence)] == '?' ||
+      tmpsentence[strlen(tmpsentence)] == '!' ||
+      ispunct(tmpsentence[strlen(tmpsentence)])) {
+    count++;
+    printf("%s", tmpsentence);
+  }
+  // for (size_t i = 0; i < strlen(tmpsentence); i++) {
+  //   if (tmpsentence[i] == '?' || tmpsentence[i] == '?') {
+  //     sentenceend = true;
+  //   }
+  // }
+  return false;
 }
 
 /// Returns a random `token_id` that corresponds to a `token` that starts with a
 /// capital letter.
 /// Uses \c tokens and \c tokens_size.
 size_t random_token_id_that_starts_a_sentence() {
-  // YOUR CODE HERE
+  int randonumbo;
+  do {
+    randonumbo = rand() % tokens_size - 1;
+    char *tmp = tokens[randonumbo];
+    printf("%s", tmp);
+  } while (!isupper(*tokens[randonumbo]));
+
+  return randonumbo;
 }
 
 /// Generates a random sentence using \c tokens, \c succs, and \c succs_sizes.
@@ -137,7 +173,7 @@ char *generate_sentence(char *sentence, size_t sentence_size) {
   // Concatenates random successors to the sentence as long as
   // `sentence` can hold them.
   do {
-    // YOUR CODE HERE
+
   } while (sentence_len_next < sentence_size - 1);
   return sentence;
 }
@@ -148,8 +184,8 @@ int main() {
   char *delimiters = " \n\r";
   char *realdelimiters = "?!";
   tokenize_and_fill_succs(realdelimiters, book);
-  return 0;
-  char sentence[1000];
+  // return 0;
+  char sentence[20];
   srand(time(nullptr)); // Be random each time we run the program
 
   // Generate sentences until we find a question sentence.
