@@ -81,8 +81,15 @@ void append_to_succs(char *token, char *succ) {
 /// the functions \c token_id and \c append_to_succs.
 void tokenize_and_fill_succs(char *delimiters, char *str) {
   size_t maxtokencount = _countof(tokens);
+  int booksize = strlen(book);
+  char tempbook[booksize];
+  strcpy(tempbook, str);
+  // printf("%s", tempbook);
+  char *tmpbookpointer = strtok(tempbook, " ");
   for (size_t word = 0; word < maxtokencount; word++) {
-    *tokens = book[word];
+    tokens[word] = tmpbookpointer;
+    printf("%s\n", tmpbookpointer);
+    tmpbookpointer = strtok(NULL, " ");
   }
 }
 
