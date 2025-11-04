@@ -1,5 +1,5 @@
 #Global uses of variables
-SRC = src/main.c src/bubble.c
+SRC = src/Fromscratch.c
 OBJ = $(SRC:.c=.o)
 #/////////////////////////////////////////////////////////////////////////////////
 #Here goes the Linux commad section
@@ -33,7 +33,7 @@ WINDOWSCC = clang
 WCFLAGS = -Wall -Wextra -std=gnu2y -g -Iheaders
 WINDOWSDELCMD = del
 # Source and object files
-WINDOWSDEL =  .\src\bubble.o  .\src\main.o
+WINDOWSDEL = .\src\Fromscratch.o
 WINDOWSOBJ1 = ./main.exe
 # Target executable
 WINDOWSTARGET = mainw
