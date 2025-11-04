@@ -6,7 +6,7 @@
             "command": "clang",
             "args": [
                 "'@compile_flags.txt'",
-                "./src/main.c",
+                "./src/Fromscratch.c",
                 "-o",
                 "main"
             ],
